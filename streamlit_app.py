@@ -32,14 +32,13 @@ def get_gdp_data():
     MIN_YEAR = int(min(year_columns))
     MAX_YEAR = int(max(year_columns))
 
-    # Assurer que l'année maximum soit 2025
-    if MAX_YEAR < 2025:
-        MAX_YEAR = 2025
+    # Exclusion des années 2023, 2024 et 2025
+    year_columns = [col for col in year_columns if int(col) < 2023]
 
     # Transformation des données (pivot des colonnes d'années)
     gdp_df = raw_gdp_df.melt(
         id_vars=["Country Code"],
-        value_vars=[str(x) for x in range(MIN_YEAR, MAX_YEAR + 1)],
+        value_vars=year_columns,
         var_name="Année",
         value_name="PIB",
     )
@@ -234,6 +233,6 @@ with tabs[3]:
         - Les montants sont affichés en dollars américains.  
         - Les valeurs du PIB sont converties en milliards pour une lecture simplifiée.
 
-        **Copyright 2025** - Données de la Banque Mondiale
+        **Tous droits reservés** - Données de la Banque Mondiale
         """
     )

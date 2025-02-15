@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import math
 from pathlib import Path
 from datetime import datetime
 
@@ -10,7 +9,7 @@ st.set_page_config(
     page_icon=":earth_americas:",
 )
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 # Définition des fonctions utiles
 
 @st.cache_data
@@ -47,7 +46,7 @@ def get_gdp_data():
 
 df_pib = get_gdp_data()
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 # Titre et description de l'application
 
 st.markdown(
@@ -55,26 +54,25 @@ st.markdown(
     # :earth_americas: Tableau de bord de la croissance du PIB mondial
     **Créé par RENE TOLNO**
 
-Plongez dans l'analyse des données du PIB grâce aux données ouvertes de la [Banque Mondiale](https://data.worldbank.org/). Cette application, conçue avec une approche basée sur la science des données, permet d'explorer et de visualiser les tendances économiques mondiales.
+    Plongez dans l'analyse des données du PIB grâce aux données ouvertes de la [Banque Mondiale](https://data.worldbank.org/). Cette application, conçue avec une approche basée sur la science des données, permet d'explorer et de visualiser les tendances économiques mondiales.
 
-Les principales Fonctionnalités :
+    Les principales Fonctionnalités :
 
-✅ Sélection dynamique de la plage d’années selon les données disponibles.
+    ✅ Sélection dynamique de la plage d’années selon les données disponibles.
 
-✅ Choix des pays à comparer pour une analyse ciblée.
+    ✅ Choix des pays à comparer pour une analyse ciblée.
 
-✅ Personnalisation avancée des graphiques : affichage en valeur absolue ou en indice (base 100).
+    ✅ Personnalisation avancée des graphiques : affichage en valeur absolue ou en indice (base 100).
 
-✅ Indicateurs clés : PIB en milliards de dollars et taux de croissance annuel moyen (CAGR).
+    ✅ Indicateurs clés : PIB en milliards de dollars et taux de croissance annuel moyen (CAGR).
 
-Idéal pour les économistes, analystes et passionnés de data science souhaitant extraire des insights pertinents sur l’évolution économique mondiale. 🚀📊
+    Idéal pour les économistes, analystes et passionnés de data science souhaitant extraire des insights pertinents sur l’évolution économique mondiale. 🚀📊
     """
 )
 
 st.write("")
-st.write("")
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 # Sélection de la plage d'années et des pays
 
 min_year_data = int(df_pib["Année"].min())
@@ -96,7 +94,7 @@ selected_countries = st.multiselect(
 
 st.write("")
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 # Options supplémentaires pour le graphique
 
 type_graphique = st.radio(
@@ -116,7 +114,7 @@ df_filtre = df_pib[
     (df_pib["Année"] <= to_year)
 ]
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 # Organisation de l'application en onglets
 
 tabs = st.tabs(["Graphique", "Indicateurs", "Données brutes", "À propos"])
@@ -137,7 +135,7 @@ with tabs[0]:
                 if base_val and not pd.isna(base_val) and base_val != 0:
                     pivot_data_index[country] = pivot_data_index[country] / base_val * 100
         pivot_data = pivot_data_index
-        st.caption("Les valeurs sont exprimées en indice (base 100 = valeur en {0}).".format(from_year))
+        st.caption(f"Les valeurs sont exprimées en indice (base 100 = valeur en {from_year}).")
     
     # Affichage du graphique
     if type_graphique == "Ligne":
@@ -161,71 +159,6 @@ with tabs[1]:
                 first_pib = float("nan")
                 last_pib = float("nan")
             
-            first_pib_b = first_pib / 1e9 if not pd.isna(first_pib) else float("nan")
-            last_pib_b = last_pib / 1e9 if not pd.isna(last_pib) else float("nan")
-            
-            if pd.isna(first_pib_b) or first_pib_b == 0 or from_year == to_year:
-                croissance = "n/a"
-                delta_color = "off"
-            else:
-                croissance = f"{(last_pib_b / first_pib_b):,.2f}x"
-                delta_color = "normal"
-            
-            st.metric(
-                label=f"PIB de {country}",
-                value=f"${last_pib_b:,.0f} Mds",
-                delta=croissance,
-                delta_color=delta_color
-            )
-    
-    st.write("")
-    # Calcul et affichage du CAGR (taux de croissance annuel moyen)
-    st.subheader("Croissance annuelle moyenne (CAGR)")
-    cols_cagr = st.columns(4)
-    for i, country in enumerate(selected_countries):
-        with cols_cagr[i % 4]:
-            try:
-                first_val = df_pib[(df_pib["Country Code"] == country) & (df_pib["Année"] == from_year)]["PIB"].iat[0]
-                last_val = df_pib[(df_pib["Country Code"] == country) & (df_pib["Année"] == to_year)]["PIB"].iat[0]
-            except IndexError:
-                first_val = float("nan")
-                last_val = float("nan")
-            
-            if pd.isna(first_val) or first_val == 0 or from_year == to_year:
-                cagr = "n/a"
-            else:
-                cagr_value = (last_val / first_val) ** (1 / (to_year - from_year)) - 1
-                cagr = f"{cagr_value * 100:.2f}%"
-            
-            st.metric(
-                label=f"CAGR {country}",
-                value=cagr
-            )
-
-# Onglet Données brutes
-with tabs[2]:
-    st.header("Données brutes")
-    st.dataframe(df_filtre)
-    csv = df_filtre.to_csv(index=False).encode("utf-8")
-    st.download_button("Télécharger les données", data=csv, file_name="donnees_pib.csv", mime="text/csv")
-
-# Onglet À propos
-with tabs[3]:
-    st.header("À propos")
-    st.markdown(
-        """
-        **Tableau de bord du PIB**  
-        Créé par **RENE TOLNO**
-
-        Cette application permet d'explorer les données du PIB issues du [World Bank Open Data](https://data.worldbank.org/).  
-        Vous pouvez :
-        - Sélectionner la plage d'années (déduite automatiquement des données disponibles).
-        - Choisir les pays à afficher.
-        - Personnaliser l'affichage du graphique (type et mode : valeur absolue ou indice avec base 100).
-        - Visualiser des indicateurs de performance, notamment le PIB en dollars et le taux de croissance annuel moyen (CAGR).
-
-        **Notes** :  
-        - Les montants sont affichés en dollars américains.  
-        - Les valeurs du PIB sont converties en milliards pour une lecture simplifiée.
-        """
-    )
+            first_pib_b = first
+::contentReference[oaicite:1]{index=1}
+ 

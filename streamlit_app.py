@@ -48,8 +48,6 @@ def get_gdp_data():
 
     # Ajouter les continents pour chaque pays (données fictives à ajuster selon la source)
     continent_map = {
-# Dictionnaire complet avec tous les pays et leurs continents
-country_dict = {
     # Afrique
     "DZA": {"name": "Algeria", "continent": "Afrique"},
     "AGO": {"name": "Angola", "continent": "Afrique"},
@@ -246,7 +244,7 @@ country_dict = {
 }
 
 # Affichage de tous les pays avec leurs codes et continents
-for code, info in country_dict.items():
+for code, info in continent_map.items():
     print(f"{code}: {info['name']} - {info['continent']}")
 
         # Ajoutez ici tous les autres pays et leurs continents

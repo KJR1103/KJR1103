@@ -6,7 +6,7 @@ from datetime import datetime
 
 # Configuration de la page : titre et icône.
 st.set_page_config(
-    page_title="Tableau de bord du PIB",
+    page_title="Tableau de bord de la croissance du PIB mondial",
     page_icon=":earth_americas:",
 )
 
@@ -52,12 +52,17 @@ df_pib = get_gdp_data()
 
 st.markdown(
     """
-    # :earth_americas: Tableau de bord du PIB
+    # :earth_americas: Tableau de bord de la croissance du PIB mondial
     **Créé par RENE TOLNO**
+Plongez dans l'analyse des données du PIB grâce aux données ouvertes de la [Banque Mondiale](https://data.worldbank.org/).Cette application, conçue avec une approche basée sur la science des données, permet d'explorer et de visualiser les tendances économiques mondiales.
+Fonctionnalités:
 
-    Explorez les données du PIB issues du [World Bank Open Data](https://data.worldbank.org/).  
-    Vous pouvez sélectionner la plage d'années (déterminée automatiquement selon le fichier de données),  
-    choisir les pays à afficher et personnaliser l'affichage.
+✅ Sélection dynamique de la plage d’années selon les données disponibles.
+✅ Choix des pays à comparer pour une analyse ciblée.
+✅ Personnalisation avancée des graphiques : affichage en valeur absolue ou en indice (base 100).
+✅ Indicateurs clés : PIB en milliards de dollars et taux de croissance annuel moyen (CAGR).
+
+Idéal pour les économistes, analystes et passionnés de data science souhaitant extraire des insights pertinents sur l’évolution économique mondiale. 🚀📊
     """
 )
 

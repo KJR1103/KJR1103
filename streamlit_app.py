@@ -249,11 +249,7 @@ for code, info in continent_map.items():
 
         # Ajoutez ici tous les autres pays et leurs continents
     
-    gdp_df["Continent"] = gdp_df["Country Code"].map(continent_map)
-
-    return gdp_df
-
-df_pib = get_gdp_data()
+ 
 
 # -----------------------------------------------------------------------------
 # Titre et description de l'application

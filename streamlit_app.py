@@ -53,9 +53,11 @@ df_pib = get_gdp_data()
 st.markdown(
     """
     # :earth_americas: Tableau de bord de la croissance du PIB mondial
-    Créé par RENE TOLNO
-Plongez dans l'analyse des données du PIB grâce aux données ouvertes de la [Banque Mondiale](https://data.worldbank.org/).Cette application, conçue avec une approche basée sur la science des données, permet d'explorer et de visualiser les tendances économiques mondiales.
-Fonctionnalités:
+    **Créé par RENE TOLNO**
+
+Plongez dans l'analyse des données du PIB grâce aux données ouvertes de la [Banque Mondiale](https://data.worldbank.org/). Cette application, conçue avec une approche basée sur la science des données, permet d'explorer et de visualiser les tendances économiques mondiales.
+
+Les principales Fonctionnalités :
 
 ✅ Sélection dynamique de la plage d’années selon les données disponibles.
 

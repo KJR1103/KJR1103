@@ -37,7 +37,7 @@ def get_gdp_data():
 
     # Transformation des données (pivot des colonnes d'années)
     gdp_df = raw_gdp_df.melt(
-        id_vars=["Country Code"],
+        id_vars=["Country Code", "Country Name"],
         value_vars=year_columns,
         var_name="Année",
         value_name="PIB",
@@ -45,6 +45,13 @@ def get_gdp_data():
 
     # Conversion de la colonne Année en entier
     gdp_df["Année"] = pd.to_numeric(gdp_df["Année"])
+
+    # Ajouter les continents pour chaque pays (données fictives à ajuster selon la source)
+    continent_map = {
+        "DEU": "Europe", "FRA": "Europe", "GBR": "Europe", "BRA": "Amérique du Sud", "MEX": "Amérique du Nord",
+        "JPN": "Asie", "USA": "Amérique du Nord", "CHN": "Asie", "IND": "Asie", "ITA": "Europe"
+    }
+    gdp_df["Continent"] = gdp_df["Country Code"].map(continent_map)
 
     return gdp_df
 
@@ -56,9 +63,9 @@ df_pib = get_gdp_data()
 st.markdown(
     """
     # :earth_americas: Tableau de bord de la croissance du PIB mondial
-    Créé par **RENE TOLNO**
+    **Créé par RENE TOLNO**
 
-Plongez dans l'analyse des données du PIB grâce aux données ouvertes de la [Banque Mondiale](https://data.worldbank.org/) Cette application, conçue avec une approche basée sur la science des données, permet d'explorer et de visualiser les tendances économiques mondiales.
+Plongez dans l'analyse des données du PIB grâce aux données ouvertes de la [Banque Mondiale](https://data.worldbank.org/). Cette application, conçue avec une approche basée sur la science des données, permet d'explorer et de visualiser les tendances économiques mondiales.
 
 Les principales Fonctionnalités :
 
@@ -72,6 +79,7 @@ Les principales Fonctionnalités :
 
 Idéal pour les économistes, analystes et passionnés de data science souhaitant extraire des insights pertinents sur l’évolution économique mondiale. 🚀📊
 
+**Copyright 2025** - Données de la Banque Mondiale
     """
 )
 
@@ -91,11 +99,26 @@ from_year, to_year = st.slider(
     value=(min_year_data, max_year_data)
 )
 
-countries = df_pib["Country Code"].unique()
+# Liste des pays et noms pour l'affichage dans le sélecteur
+countries_dict = {
+    "DEU": "Allemagne",
+    "FRA": "France",
+    "GBR": "Royaume-Uni",
+    "BRA": "Brésil",
+    "MEX": "Mexique",
+    "JPN": "Japon",
+    "USA": "États-Unis",
+    "CHN": "Chine",
+    "IND": "Inde",
+    "ITA": "Italie"
+}
+countries = list(countries_dict.keys())
+
 selected_countries = st.multiselect(
     "Sélectionnez les pays à afficher :",
-    options=list(countries),
-    default=["DEU", "FRA", "GBR", "BRA", "MEX", "JPN"]
+    options=countries,
+    default=["DEU", "FRA", "GBR", "BRA", "MEX", "JPN"],
+    format_func=lambda country: f"{country} - {countries_dict[country]}"  # Afficher le nom du pays avec son code
 )
 
 st.write("")
@@ -206,6 +229,18 @@ with tabs[1]:
                 value=cagr
             )
 
+    # Classement par pays pour chaque année
+    st.subheader("Classement des pays par PIB (tous les pays)")
+    for year in range(from_year, to_year + 1):
+        ranking_df = df_pib[df_pib["Année"] == year].sort_values("PIB", ascending=False)
+        st.subheader(f"Classement des pays pour l'année {year}")
+        st.dataframe(ranking_df[["Country Code", "Country Name", "PIB"]].head(10))  # Afficher le top 10 des pays
+
+    # Classement par continent pour chaque année
+    st.subheader(f"Classement par continent en {to_year}")
+    continent_rank = df_pib[df_pib["Année"] == to_year].groupby("Continent")["PIB"].sum().sort_values(ascending=False)
+    st.dataframe(continent_rank)
+
 # Onglet Données brutes
 with tabs[2]:
     st.header("Données brutes")
@@ -232,6 +267,6 @@ with tabs[3]:
         - Les montants sont affichés en dollars américains.  
         - Les valeurs du PIB sont converties en milliards pour une lecture simplifiée.
 
-        **Tous droits reservés** - Données de la Banque Mondiale
+        **Tous droit reservé** - Données de la Banque Mondiale
         """
     )

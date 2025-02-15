@@ -248,7 +248,7 @@ for code, info in continent_map.items():
     print(f"{code}: {info['name']} - {info['continent']}")
 
         # Ajoutez ici tous les autres pays et leurs continents
-    }
+    
     gdp_df["Continent"] = gdp_df["Country Code"].map(continent_map)
 
     return gdp_df
